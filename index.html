@@ -1,0 +1,209 @@
+<!DOCTYPE html>
+<html lang="vi">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>Profile Nguyễn Hồng Diễm Phúc</title>
+  <link rel="icon" href="/images/logo.ico" type="image/x-icon">
+  <meta name="description" content="Profile Nguyễn Hồng Diễm Phúc - Github">
+  <meta name="author" content="Nguyễn Hồng Diễm Phúc">
+
+  <!-- SEO -->
+  <meta property="og:title" content="Profile Nguyễn Hồng Diễm Phúc">
+  <meta property="og:description" content="Profile Nguyễn Hồng Diễm Phúc - GitHub.">
+  <meta property="og:image" content="images/avatar.webp">
+  <meta property="og:url" content="https://nguyenhongdiemphucvn.github.io">
+
+   <!-- Đăng ký Service Worker -->
+  <link rel="manifest" href="/manifest.json">
+  <meta name="theme-color" content="#2196f3">
+
+  <script>
+  if ('serviceWorker' in navigator) {
+    navigator.serviceWorker.register('/gitme-termux.github.io/service-worker.js')
+      .then(() => console.log('Service Worker đã được đăng ký'))
+      .catch(err => console.error('Đăng ký Service Worker thất bại:', err));
+  }
+  </script>
+  
+  <!-- Tailwind CSS + Animate.css -->
+  <script src="https://cdn.tailwindcss.com"></script>
+  <script>
+    tailwind.config = { darkMode: 'class' }
+  </script>
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/animate.css/4.1.1/animate.min.css"/>
+</head>
+
+<body class="bg-white dark:bg-gray-900 text-gray-800 dark:text-white transition duration-300">
+
+  <!-- Navbar -->
+  <nav class="bg-white dark:bg-gray-800 shadow sticky top-0 z-50">
+    <div class="max-w-6xl mx-auto px-4 py-4 flex justify-between items-center">
+      <div class="text-2xl font-bold text-blue-600 dark:text-blue-400">Nguyễn Hồng Diễm Phúc</div>
+      
+      <!-- Nút menu mobile -->
+      <button onclick="toggleMenu()" class="md:hidden text-2xl focus:outline-none">
+        ☰
+      </button>
+
+      <!-- Menu desktop -->
+      <div id="menu" class="hidden md:flex space-x-4 items-center">
+        <a href="#about" class="hover:text-blue-500 dark:hover:text-blue-400">Giới thiệu</a>
+        <a href="#skills" class="hover:text-blue-500 dark:hover:text-blue-400">Kỹ năng</a>
+        <a href="#timeline" class="hover:text-blue-500 dark:hover:text-blue-400">Kinh nghiệm</a>
+        <a href="#projects" class="hover:text-blue-500 dark:hover:text-blue-400">Dự án</a>
+        <a href="#testimonials" class="hover:text-blue-500 dark:hover:text-blue-400">Đánh giá</a>
+        <button onclick="toggleTheme()" class="text-xl px-2 py-1 rounded hover:bg-gray-200 dark:hover:bg-gray-700">
+          <span id="theme-icon">🌙</span>
+        </button>
+      </div>
+    </div>
+
+    <!-- Menu mobile -->
+    <div id="mobileMenu" class="md:hidden px-4 pb-4 hidden flex-col space-y-2">
+      <a href="#about" class="block hover:text-blue-500 dark:hover:text-blue-400">Giới thiệu</a>
+      <a href="#skills" class="block hover:text-blue-500 dark:hover:text-blue-400">Kỹ năng</a>
+      <a href="#timeline" class="block hover:text-blue-500 dark:hover:text-blue-400">Kinh nghiệm</a>
+      <a href="#projects" class="block hover:text-blue-500 dark:hover:text-blue-400">Dự án</a>
+      <a href="#testimonials" class="block hover:text-blue-500 dark:hover:text-blue-400">Đánh giá</a>
+      <button onclick="toggleTheme()" class="text-left text-xl px-2 py-1 rounded hover:bg-gray-200 dark:hover:bg-gray-700">
+        <span id="theme-icon-mobile">🌙</span>
+      </button>
+    </div>
+  </nav>
+
+  <!-- Header -->
+  <header class="text-center py-12 animate__animated animate__fadeInDown">
+    <img src="images/avatar.webp" alt="Profile" class="w-32 h-32 mx-auto rounded-full border-4 border-blue-500 shadow-lg">
+    <h1 class="text-4xl font-bold mt-4">Nguyễn Hồng Diễm Phúc</h1>
+    <p class="text-gray-500 dark:text-gray-400 text-lg">Lập trình viên Full Stack | Tự động hóa | Open Source</p>
+  </header>
+
+  <!-- About -->
+  <section id="about" class="max-w-4xl mx-auto px-6 py-10">
+    <h2 class="text-2xl font-semibold mb-4">Giới Thiệu</h2>
+    <p class="text-gray-700 dark:text-gray-300">
+      Tôi là lập trình viên chuyên phát triển web và tự động hóa hệ thống trên Termux, có niềm đam mê với mã nguồn mở và công cụ hiệu suất cao. Hướng tới những giải pháp tối giản, thực dụng, dễ triển khai.
+    </p>
+  </section>
+
+  <!-- Skills -->
+  <section id="skills" class="bg-gray-100 dark:bg-gray-800 py-10">
+    <div class="max-w-4xl mx-auto px-6">
+      <h2 class="text-2xl font-semibold mb-6">Kỹ Năng</h2>
+      <div class="flex flex-wrap gap-3">
+        <span class="bg-blue-600 text-white px-3 py-1 rounded-full">JavaScript</span>
+        <span class="bg-green-600 text-white px-3 py-1 rounded-full">Node.js</span>
+        <span class="bg-yellow-500 text-white px-3 py-1 rounded-full">Python</span>
+        <span class="bg-indigo-600 text-white px-3 py-1 rounded-full">React</span>
+        <span class="bg-pink-500 text-white px-3 py-1 rounded-full">HTML - CSS</span>
+        <span class="bg-gray-700 text-white px-3 py-1 rounded-full">Lua Script</span>
+        <span class="bg-purple-600 text-white px-3 py-1 rounded-full">Git & GitHub API</span>
+      </div>
+    </div>
+  </section>
+
+  <!-- Experience -->
+  <section id="timeline" class="max-w-4xl mx-auto px-6 py-10">
+    <h2 class="text-2xl font-semibold mb-6">Kinh Nghiệm</h2>
+    <div class="space-y-6">
+      <div>
+        <h3 class="text-xl font-bold">Freelancer & Contributor</h3>
+        <p class="text-gray-400">2020 - 2025</p>
+        <p class="text-gray-300">Xây dựng công cụ GitHub Automation, hỗ trợ cộng đồng open-source, phát triển nhiều project Termux tool.</p>
+      </div>
+    </div>
+  </section>
+
+  <!-- Projects -->
+<section id="projects" class="bg-gray-100 dark:bg-gray-800 py-10">
+  <div class="max-w-4xl mx-auto px-6">
+    <h2 class="text-2xl font-semibold mb-6">Dự Án</h2>
+    <div class="grid sm:grid-cols-2 gap-6">
+      <div class="bg-white dark:bg-gray-700 p-6 rounded shadow">
+        <h3 class="text-xl font-semibold">GitHub Tools Dashboard</h3>
+        <p class="text-gray-500 dark:text-gray-300 mb-2">Giao diện web tự động hoá quản lý repo, tạo README, CI/CD.</p>
+        <a href="/project.html" class="text-blue-500 hover:underline">Xem Chi Tiết</a>
+      </div>
+      <div class="bg-white dark:bg-gray-700 p-6 rounded shadow">
+        <h3 class="text-xl font-semibold">Termux Automation Script</h3>
+        <p class="text-gray-500 dark:text-gray-300 mb-2">Shell tool cho người dùng Termux thao tác nhanh với Git và quản lý file.</p>
+        <a href="/public/store.html" class="text-blue-500 hover:underline">Xem Chi Tiết</a>
+      </div>
+    </div>
+  </div>
+</section>
+  
+  <!-- Repository -->
+  <section id="projects" class="bg-gray-100 dark:bg-gray-800 py-10">
+    <div class="max-w-4xl mx-auto px-6">
+      <h2 class="text-2xl font-semibold mb-6">Repository</h2>
+      <div id="github-repos" class="grid sm:grid-cols-2 gap-6">
+      <!-- Repo cards will be inserted here -->
+      </div>
+    </div>
+  </section>
+
+  <!-- Testimonials -->
+  <section id="testimonials" class="max-w-4xl mx-auto px-6 py-10">
+    <h2 class="text-2xl font-semibold mb-6">Đánh Giá</h2>
+    <div class="bg-gray-200 dark:bg-gray-700 p-6 rounded">
+      <p class="italic text-gray-800 dark:text-gray-200">"Phúc rất tỉ mỉ và sáng tạo. Các script bạn ấy viết giúp tôi tiết kiệm hàng giờ làm việc thủ công."</p>
+      <p class="text-right text-gray-500 mt-2">– Trần Văn T., DevOps Engineer</p>
+    </div>
+  </section>
+
+  <!-- Footer -->
+  <footer class="bg-gray-800 text-white py-6 text-center">
+    <p>© 2025 Nguyễn Hồng Diễm Phúc</p>
+    <p>
+      <a href="mailto: hr.nguyenhongdiemphuc@gmail.com" class="hover:underline">Email</a> |
+      <a href="https://github.com/nguyenhongdiemphucvn" target="_blank" class="hover:underline">GitHub</a>
+    </p>
+  </footer>
+
+  <!-- Theme toggle script -->
+  <script>
+    function toggleTheme() {
+      const html = document.documentElement;
+      const icon = document.getElementById('theme-icon');
+      const iconMobile = document.getElementById('theme-icon-mobile');
+      html.classList.toggle('dark');
+      const isDark = html.classList.contains('dark');
+      if (icon) icon.textContent = isDark ? '🌙' : '☀️';
+      if (iconMobile) iconMobile.textContent = isDark ? '🌙' : '☀️';
+    }
+
+    function toggleMenu() {
+      const menu = document.getElementById('mobileMenu');
+      menu.classList.toggle('hidden');
+    }
+  </script>
+  
+  <!-- Repository script -->
+  
+  <script>
+  const username = 'nguyenhongdiemphucvn'; // Thay bằng username GitHub của bạn
+
+  fetch(`https://api.github.com/users/${username}/repos?sort=updated`)
+    .then(response => response.json())
+    .then(repos => {
+      const container = document.getElementById('github-repos');
+      repos.forEach(repo => {
+        const card = document.createElement('div');
+        card.className = 'bg-white dark:bg-gray-700 p-6 rounded shadow';
+        card.innerHTML = `
+          <h3 class="text-xl font-semibold">${repo.name}</h3>
+          <p class="text-gray-500 dark:text-gray-300 mb-2">${repo.description || 'Không có mô tả'}</p>
+          <a href="${repo.html_url}" target="_blank" class="text-blue-500 hover:underline">Xem dự án</a>
+        `;
+        container.appendChild(card);
+      });
+    })
+    .catch(error => {
+      console.error('Lỗi khi lấy repo từ GitHub:', error);
+    });
+</script>
+
+</body>
+</html>

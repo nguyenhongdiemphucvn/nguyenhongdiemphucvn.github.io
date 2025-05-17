@@ -1,0 +1,185 @@
+<!DOCTYPE html>
+<html lang="vi">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>Profile Nguyễn Hồng Diễm Phúc</title>
+  <link rel="icon" href="/images/logo.ico" type="image/x-icon">
+  <meta name="description" content="Profile Nguyễn Hồng Diễm Phúc - Github">
+  <meta name="author" content="Nguyễn Hồng Diễm Phúc">
+
+  <!-- SEO -->
+  <meta property="og:title" content="Profile Nguyễn Hồng Diễm Phúc">
+  <meta property="og:description" content="Profile Nguyễn Hồng Diễm Phúc - GitHub.">
+  <meta property="og:image" content="images/avatar.webp">
+  <meta property="og:url" content="https://nguyenhongdiemphucvn.github.io">
+  <link rel="manifest" href="/manifest.json">
+  <meta name="theme-color" content="#2196f3">
+  
+  <script src="https://cdn.tailwindcss.com"></script>
+  <script src="https://cdn.jsdelivr.net/npm/showdown@1.9.1/dist/showdown.min.js"></script>
+    <!-- Đăng ký Service Worker -->
+  <script>
+  if ('serviceWorker' in navigator) {
+    navigator.serviceWorker.register('/public/service-worker.js')
+      .then(() => console.log('Service Worker đã được đăng ký'))
+      .catch(err => console.error('Lỗi khi đăng ký Service Worker:', err));
+  }
+  </script>
+</head>
+<body class="bg-gray-900 text-white p-6 font-sans">
+  <div class="max-w-3xl mx-auto bg-gray-800 p-6 rounded shadow space-y-6 text-center">
+    <h1 class="text-3xl font-bold">CI/CD GitHub Pages Viewer</h1>
+    <p class="text-gray-300">Nhập hoặc chọn repo GitHub để mở trang GitHub Pages và kiểm tra trạng thái CI/CD.</p>
+
+    <!-- Input và Drop-down -->
+    <div class="space-y-4">
+      <input
+        type="text"
+        id="repoInput"
+        placeholder="https://github.com/user/repo-name"
+        class="w-full px-4 py-2 rounded bg-gray-700 text-white border border-gray-600 focus:outline-none focus:ring-2 focus:ring-blue-500"
+      />
+      <select
+        id="repoDropdown"
+        onchange="selectFromDropdown()"
+        class="w-full px-4 py-2 rounded bg-gray-700 text-white border border-gray-600"
+      >
+        <option value="">-- Chọn repo đã lưu --</option>
+      </select>
+      <button
+        onclick="openPages()"
+        class="bg-green-600 hover:bg-green-700 text-white px-4 py-2 rounded"
+      >
+        Truy cập GitHub Pages
+      </button>
+    </div>
+
+    <!-- Thêm các tính năng với các khung rõ ràng -->
+    <div class="space-y-4">
+      <!-- Trạng thái CI/CD với khung màu rõ ràng -->
+      <div id="ciStatus" class="text-sm p-4 rounded border"></div>
+
+      <!-- Lịch sử commit -->
+      <div id="commitHistory" class="text-sm p-4 rounded border bg-gray-700"></div>
+
+      <!-- Xem trước README -->
+      <div id="readmePreview" class="text-sm p-4 rounded border bg-gray-700"></div>
+    </div>
+
+    <p class="text-sm text-gray-500 mt-6">© 2025 Nguyễn Hồng Diễm Phúc</p>
+  </div>
+
+  <script>
+    const input = document.getElementById('repoInput');
+    const dropdown = document.getElementById('repoDropdown');
+    const ciStatus = document.getElementById('ciStatus');
+    const commitHistory = document.getElementById('commitHistory');
+    const readmePreview = document.getElementById('readmePreview');
+
+    // Load repo từ localStorage
+    function loadRepos() {
+      const repos = JSON.parse(localStorage.getItem('savedRepos') || '[]');
+      dropdown.innerHTML = '<option value="">-- Chọn repo đã lưu --</option>';
+      repos.forEach(url => {
+        const option = document.createElement('option');
+        option.value = url;
+        option.textContent = url;
+        dropdown.appendChild(option);
+      });
+    }
+
+    // Chọn repo từ drop-down
+    function selectFromDropdown() {
+      const selected = dropdown.value;
+      if (selected) {
+        input.value = selected;
+        fetchRepoData(selected);
+      }
+    }
+
+    // Mở GitHub Pages
+    function openPages() {
+      const url = input.value.trim();
+      const regex = /^https:\/\/github\.com\/([\w-]+)\/([\w.-]+)$/;
+      const match = url.match(regex);
+
+      if (match) {
+        const username = match[1];
+        const repo = match[2];
+        const pagesUrl = `https://${username}.github.io/${repo}/`;
+
+        saveRepo(url);
+        window.open(pagesUrl, '_blank');
+        fetchRepoData(url);
+      } else {
+        alert("Vui lòng nhập đúng định dạng repo GitHub.");
+      }
+    }
+
+    // Lưu repo vào localStorage
+    function saveRepo(url) {
+      let repos = JSON.parse(localStorage.getItem('savedRepos') || '[]');
+      if (!repos.includes(url)) {
+        repos.push(url);
+        localStorage.setItem('savedRepos', JSON.stringify(repos));
+        loadRepos();
+      }
+    }
+
+    // Lấy thông tin từ GitHub API
+    async function fetchRepoData(repoUrl) {
+      const regex = /^https:\/\/github\.com\/([\w-]+)\/([\w.-]+)$/;
+      const match = repoUrl.match(regex);
+      if (!match) return;
+
+      const username = match[1];
+      const repo = match[2];
+      const apiUrl = `https://api.github.com/repos/${username}/${repo}`;
+
+      // Fetch CI status (Actions status)
+      const ciUrl = `${apiUrl}/actions/runs`;
+      const ciResponse = await fetch(ciUrl);
+      const ciData = await ciResponse.json();
+      const latestCiRun = ciData.workflow_runs ? ciData.workflow_runs[0] : null;
+      if (latestCiRun) {
+        let ciMessage = `Trạng thái CI/CD: ${latestCiRun.conclusion || 'Đang chờ xử lý'}`;
+        let ciColor = 'bg-yellow-500'; // Mặc định là màu vàng cho trạng thái chờ xử lý.
+        if (latestCiRun.conclusion === 'success') {
+          ciColor = 'bg-green-500'; // Thành công.
+        } else if (latestCiRun.conclusion === 'failure') {
+          ciColor = 'bg-red-500'; // Thất bại.
+        }
+        ciStatus.innerHTML = `<div class="text-white p-2 rounded ${ciColor}">${ciMessage}</div>`;
+      } else {
+        ciStatus.innerHTML = '<div class="text-white p-2 rounded bg-gray-500">Không có dữ liệu CI/CD.</div>';
+      }
+
+      // Fetch commit history
+      const commitsUrl = `${apiUrl}/commits`;
+      const commitsResponse = await fetch(commitsUrl);
+      const commitsData = await commitsResponse.json();
+      commitHistory.innerHTML = '<h3 class="font-bold text-xl text-gray-200">Lịch sử commit gần đây:</h3>';
+      commitsData.slice(0, 5).forEach(commit => {
+        commitHistory.innerHTML += `<p><strong class="text-green-300">${commit.commit.author.name}</strong>: ${commit.commit.message} (Ngày: ${commit.commit.author.date})</p>`;
+      });
+
+      // Fetch README.md content
+      const readmeUrl = `${apiUrl}/readme`;
+      const readmeResponse = await fetch(readmeUrl);
+      if (readmeResponse.ok) {
+        const readmeData = await readmeResponse.json();
+        const readmeContent = atob(readmeData.content); // Decode base64
+        const converter = new showdown.Converter();
+        const html = converter.makeHtml(readmeContent);
+        readmePreview.innerHTML = '<h3 class="font-bold text-xl text-gray-200">Preview README.md:</h3>' + html;
+      } else {
+        readmePreview.innerHTML = '<p>Không tìm thấy README.md trong repo này.</p>';
+      }
+    }
+
+    // Tải danh sách repo khi trang load
+    loadRepos();
+  </script>
+</body>
+</html>
