@@ -1,0 +1,70 @@
+<!DOCTYPE html>
+<html lang="vi">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>Profile Nguyễn Hồng Diễm Phúc</title>
+  <link rel="icon" href="/images/logo.ico" type="image/x-icon">
+  <meta name="description" content="Profile Nguyễn Hồng Diễm Phúc - Github">
+  <meta name="author" content="Nguyễn Hồng Diễm Phúc">
+
+  <!-- SEO -->
+  <meta property="og:title" content="Profile Nguyễn Hồng Diễm Phúc">
+  <meta property="og:description" content="Profile Nguyễn Hồng Diễm Phúc - GitHub.">
+  <meta property="og:image" content="images/avatar.webp">
+  <meta property="og:url" content="https://nguyenhongdiemphucvn.github.io">
+  <script src="https://cdn.tailwindcss.com"></script>
+  <link rel="manifest" href="/manifest.json">
+  <meta name="theme-color" content="#2196f3">
+
+  <!-- Đăng ký Service Worker -->
+  <script>
+  if ('serviceWorker' in navigator) {
+    navigator.serviceWorker.register('/public/service-worker.js')
+      .then(() => console.log('Service Worker đã được đăng ký'))
+      .catch(err => console.error('Đăng ký Service Worker thất bại:', err));
+  }
+  </script>
+</head>
+<body class="bg-gray-900 text-white p-6 font-sans">
+  <div class="max-w-xl mx-auto bg-gray-800 p-6 rounded shadow">
+    <h1 class="text-2xl font-bold mb-4 text-center">Tạo khóa truy cập</h1>
+
+    <button onclick="generateKey()" class="bg-green-600 hover:bg-green-700 px-4 py-2 rounded mb-4 w-full">
+      Tạo khóa mới
+    </button>
+
+    <div id="keyDisplay" class="mb-4 hidden">
+      <p class="text-sm text-gray-300 mb-1">Khóa đã tạo:</p>
+      <pre id="keyText" class="bg-gray-700 p-3 rounded text-green-400 break-all"></pre>
+    </div>
+
+    <div id="downloadButtons" class="hidden space-y-2">
+      <button onclick="downloadKeyFile('access.key.txt')" class="bg-blue-600 hover:bg-blue-700 px-4 py-2 rounded w-full">
+        Tải về access.key.txt (gửi cho người dùng)
+      </button>      
+    </div>
+  </div>
+
+  <script>
+    const fixedKey = 'gitme-secret-access-2025'; // Khóa cố định
+
+    function generateKey() {
+      // Dùng khóa cố định thay vì tạo ngẫu nhiên
+      document.getElementById("keyText").innerText = fixedKey;
+      document.getElementById("keyDisplay").classList.remove("hidden");
+      document.getElementById("downloadButtons").classList.remove("hidden");
+    }
+
+    function downloadKeyFile(filename) {
+      // Tải khóa cố định
+      const blob = new Blob([fixedKey], { type: "text/plain" });
+      const link = document.createElement("a");
+      link.href = URL.createObjectURL(blob);
+      link.download = filename;
+      link.click();
+      URL.revokeObjectURL(link.href);
+    }
+  </script>
+</body>
+</html>

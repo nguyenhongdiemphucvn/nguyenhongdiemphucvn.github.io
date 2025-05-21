@@ -1,0 +1,92 @@
+<!DOCTYPE html>
+<html lang="vi">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>Chính Sách Bảo Mật</title>
+  <link rel="icon" href="/images/logo.ico" type="image/x-icon">
+  <meta name="description" content="Chính sách bảo mật của website">
+  <meta name="author" content="Nguyễn Hồng Diễm Phúc">
+
+  <!-- SEO -->
+  <meta property="og:title" content="Chính sách bảo mật">
+  <meta property="og:description" content="Chính sách bảo mật website.">
+  <meta property="og:image" content="images/avatar.webp">
+  <meta property="og:url" content="https://nguyenhongdiemphucvn.github.io">
+
+  <!-- Tailwind CSS -->
+  <script src="https://cdn.tailwindcss.com"></script>
+
+  <!-- Đăng ký Service Worker -->
+  <link rel="manifest" href="/manifest.json">
+  <meta name="theme-color" content="#2196f3">
+
+  <script>
+  if ('serviceWorker' in navigator) {
+    navigator.serviceWorker.register(`${location.origin}/service-worker.js`)
+      .then(() => console.log('Service Worker đã được đăng ký'))
+      .catch(err => console.error('Đăng ký Service Worker thất bại:', err));
+  }
+  </script>  
+</head>
+<body class="bg-gray-900 text-white p-6 font-sans">
+
+<div class="max-w-5xl mx-auto bg-gray-800 p-6 rounded-lg shadow-xl space-y-6">
+  <h1 class="text-3xl font-extrabold text-center text-indigo-400">Chính Sách Bảo Mật</h1>
+
+  <div class="bg-gray-700 p-6 rounded-lg shadow-md">
+    <h2 class="text-xl font-semibold text-indigo-300">Chính sách bảo mật và bảo vệ dữ liệu người dùng</h2>
+    <p class="mt-4 text-white">
+      Website của chúng tôi cam kết bảo vệ quyền riêng tư và bảo mật thông tin của người dùng. Chính sách bảo mật này giải thích cách chúng tôi thu thập, sử dụng và bảo vệ thông tin cá nhân của bạn khi bạn sử dụng các dịch vụ của chúng tôi.
+    </p>
+
+    <h3 class="text-lg font-semibold text-indigo-300 mt-6">1. Thu thập và sử dụng thông tin</h3>
+    <p class="mt-2 text-white">
+      Khi bạn sử dụng website, chúng tôi có thể thu thập các thông tin sau:
+      <ul class="list-disc ml-6 mt-2">
+        <li>Thông tin cá nhân: như tên, địa chỉ email, thông tin tài khoản.</li>
+        <li>Thông tin kỹ thuật: như địa chỉ IP, trình duyệt, hệ điều hành và các thông tin về cách bạn sử dụng website.</li>
+      </ul>
+      Những thông tin này sẽ chỉ được sử dụng để cung cấp dịch vụ, cải thiện trải nghiệm người dùng và liên lạc với bạn khi cần thiết.
+    </p>
+
+    <h3 class="text-lg font-semibold text-indigo-300 mt-6">2. Bảo mật thông tin</h3>
+    <p class="mt-2 text-white">
+      Chúng tôi sử dụng các biện pháp bảo mật tiên tiến để bảo vệ thông tin cá nhân của bạn, bao gồm:
+      <ul class="list-disc ml-6 mt-2">
+        <li>Mã hóa dữ liệu: Để đảm bảo thông tin của bạn không bị lộ ra ngoài khi truyền tải qua mạng.</li>
+        <li>Quản lý quyền truy cập: Chúng tôi đảm bảo rằng chỉ những người có quyền hạn mới có thể truy cập thông tin cá nhân của bạn.</li>
+        <li>Đảm bảo an toàn hệ thống: Website và các dịch vụ của chúng tôi được duy trì và kiểm tra thường xuyên để ngăn chặn các mối đe dọa bảo mật.</li>
+      </ul>
+    </p>
+
+    <h3 class="text-lg font-semibold text-indigo-300 mt-6">3. Cookies và công nghệ theo dõi</h3>
+    <p class="mt-2 text-white">
+      Website của chúng tôi sử dụng cookies để nâng cao trải nghiệm của người dùng. Cookies là những tệp nhỏ lưu trữ trên trình duyệt của bạn, giúp chúng tôi nhận diện người dùng và thu thập thông tin về cách người dùng sử dụng website.
+      Bạn có thể tắt cookies trong trình duyệt của mình, tuy nhiên, điều này có thể ảnh hưởng đến một số chức năng của website.
+    </p>
+
+    <h3 class="text-lg font-semibold text-indigo-300 mt-6">4. Chia sẻ thông tin với bên thứ ba</h3>
+    <p class="mt-2 text-white">
+      Chúng tôi cam kết không bán hoặc chia sẻ thông tin cá nhân của bạn với bất kỳ bên thứ ba nào, trừ khi có yêu cầu từ cơ quan pháp luật hoặc khi cần thiết để cung cấp các dịch vụ của chúng tôi.
+    </p>
+
+    <h3 class="text-lg font-semibold text-indigo-300 mt-6">5. Quyền của người dùng</h3>
+    <p class="mt-2 text-white">
+      Bạn có quyền truy cập, sửa đổi hoặc xóa bỏ thông tin cá nhân mà chúng tôi lưu trữ. Nếu bạn muốn thực hiện các quyền này, vui lòng liên hệ với chúng tôi qua thông tin liên lạc dưới đây.
+    </p>
+
+    <h3 class="text-lg font-semibold text-indigo-300 mt-6">6. Thay đổi chính sách bảo mật</h3>
+    <p class="mt-2 text-white">
+      Chính sách bảo mật này có thể thay đổi theo thời gian để phù hợp với các thay đổi của pháp luật hoặc quy định mới. Mọi thay đổi sẽ được thông báo trên trang này và có hiệu lực ngay khi được cập nhật.
+    </p>
+
+    <h3 class="text-lg font-semibold text-indigo-300 mt-6">7. Liên hệ</h3>
+    <p class="mt-2 text-white">
+      Nếu bạn có bất kỳ câu hỏi nào về chính sách bảo mật hoặc muốn yêu cầu sửa đổi thông tin cá nhân của mình, vui lòng liên hệ với chúng tôi qua email: <a href="mailto:hr.nguyenhongdiemphuc@gmail.com" class="text-indigo-400">hr.nguyenhongdiemphuc@gmail.com</a>.
+    </p>
+  </div>
+</div>
+
+</body>
+</html>

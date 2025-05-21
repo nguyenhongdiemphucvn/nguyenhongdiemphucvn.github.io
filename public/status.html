@@ -1,0 +1,214 @@
+<!DOCTYPE html>
+<html lang="vi">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>Chính Sách Website</title>
+  <link rel="icon" href="/images/logo.ico" type="image/x-icon">
+  <meta name="description" content="Chính sách website">
+  <meta name="author" content="Nguyễn Hồng Diễm Phúc">
+
+  <!-- SEO -->
+  <meta property="og:title" content="Chính sách website">
+  <meta property="og:description" content="Chính sách sử dụng của website.">
+  <meta property="og:image" content="images/avatar.webp">
+  <meta property="og:url" content="https://nguyenhongdiemphucvn.github.io">
+  
+  <script src="https://cdn.tailwindcss.com"></script>
+  <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+  <!-- Đăng ký Service Worker -->
+  <link rel="manifest" href="/manifest.json">
+  <meta name="theme-color" content="#2196f3">
+
+  <script>
+  if ('serviceWorker' in navigator) {
+    navigator.serviceWorker.register(`${location.origin}/service-worker.js`)
+      .then(() => console.log('Service Worker đã được đăng ký'))
+      .catch(err => console.error('Đăng ký Service Worker thất bại:', err));
+  }
+  </script>  
+</head>
+<body class="bg-gray-950 text-white min-h-screen p-6 font-sans leading-relaxed">
+  <main class="max-w-6xl mx-auto space-y-10">
+
+    <!-- Tiêu đề chính -->
+    <header class="text-center space-y-2">
+      <h1 class="text-4xl font-bold tracking-tight">Nguyễn Hồng Diễm Phúc - GitHub Dashboard</h1>
+      <p class="text-gray-400">Theo dõi toàn bộ repository, commit và trạng thái CI/CD</p>
+    </header>
+
+    <!-- Tổng quan GitHub -->
+    <section class="bg-gray-900 rounded-lg shadow border border-gray-700 p-6">
+      <h2 class="text-2xl font-semibold mb-4">Tổng Quan GitHub</h2>
+      <div class="grid grid-cols-2 sm:grid-cols-4 gap-6 text-center">
+        <div class="bg-gray-800 p-4 rounded">
+          <p class="text-gray-400">Repositories</p>
+          <p id="repoCount" class="text-2xl font-bold">...</p>
+        </div>
+        <div class="bg-gray-800 p-4 rounded">
+          <p class="text-gray-400">Stars</p>
+          <p id="totalStars" class="text-2xl font-bold">...</p>
+        </div>
+        <div class="bg-gray-800 p-4 rounded">
+          <p class="text-gray-400">Forks</p>
+          <p id="totalForks" class="text-2xl font-bold">...</p>
+        </div>
+        <div class="bg-gray-800 p-4 rounded">
+          <p class="text-gray-400">Ngôn ngữ chính</p>
+          <p id="topLanguage" class="text-2xl font-bold">...</p>
+        </div>
+      </div>
+    </section>
+
+    <!-- Biểu đồ ngôn ngữ -->
+    <section class="bg-gray-900 rounded-lg shadow border border-gray-700 p-6">
+      <div class="flex flex-col sm:flex-row justify-between items-center mb-4">
+        <h2 class="text-2xl font-semibold">Biểu đồ sử dụng ngôn ngữ</h2>
+        <select id="chartType" class="mt-3 sm:mt-0 bg-gray-800 text-white p-2 rounded border border-gray-600">
+          <option value="bar">Biểu đồ Cột</option>
+          <option value="pie">Biểu đồ Tròn</option>
+          <option value="doughnut">Biểu đồ Donut</option>
+        </select>
+      </div>
+      <canvas id="langChart" class="bg-white rounded p-3"></canvas>
+    </section>
+
+    <!-- Danh sách chi tiết các repo -->
+    <section class="bg-gray-900 rounded-lg shadow border border-gray-700 p-6">
+      <h2 class="text-2xl font-semibold mb-6">Chi tiết các Repository</h2>
+      <div id="repoList" class="space-y-8"></div>
+    </section>
+
+    <!-- Footer -->
+    <footer class="text-center text-gray-500 text-xs mt-10">
+      © 2025 Nguyễn Hồng Diễm Phúc. Xây dựng bởi TailwindCSS + GitHub API.
+    </footer>
+  </main>
+
+  <script>
+    const GITHUB_USERNAME = 'nguyenhongdiemphucvn';
+    const repoCount = document.getElementById('repoCount');
+    const totalStars = document.getElementById('totalStars');
+    const totalForks = document.getElementById('totalForks');
+    const topLanguage = document.getElementById('topLanguage');
+    const repoList = document.getElementById('repoList');
+    const chartTypeSelect = document.getElementById('chartType');
+    const ctx = document.getElementById('langChart').getContext('2d');
+
+    let chartInstance;
+    let languageData = {};
+
+    async function fetchUserStats(username) {
+      const res = await fetch(`https://api.github.com/users/${username}/repos?per_page=100`);
+      const repos = await res.json();
+
+      if (!Array.isArray(repos)) return;
+
+      repoCount.textContent = repos.length;
+      let stars = 0, forks = 0;
+      const languages = {};
+
+      repoList.innerHTML = '';
+
+      for (const repo of repos) {
+        stars += repo.stargazers_count;
+        forks += repo.forks_count;
+        if (repo.language) {
+          languages[repo.language] = (languages[repo.language] || 0) + 1;
+        }
+
+        const repoDiv = document.createElement('div');
+        repoDiv.className = "bg-gray-800 p-5 rounded-lg border border-gray-700";
+        repoDiv.innerHTML = `
+          <h3 class="text-xl font-bold text-blue-400">${repo.name}</h3>
+          <p class="text-gray-400">Ngôn ngữ: <strong>${repo.language || 'Không rõ'}</strong></p>
+          <p>Sao: ${repo.stargazers_count} | Forks: ${repo.forks_count}</p>
+          <div id="ci-${repo.name}" class="mt-2 text-sm"></div>
+          <div id="commit-${repo.name}" class="mt-2 space-y-2 text-sm"></div>
+        `;
+        repoList.appendChild(repoDiv);
+
+        fetchRepoData(repo.owner.login, repo.name);
+      }
+
+      totalStars.textContent = stars;
+      totalForks.textContent = forks;
+      const sortedLangs = Object.entries(languages).sort((a, b) => b[1] - a[1]);
+      topLanguage.textContent = sortedLangs.length ? sortedLangs[0][0] : 'Không rõ';
+
+      languageData = languages;
+      renderChart(chartTypeSelect.value);
+    }
+
+    function renderChart(type) {
+      if (chartInstance) chartInstance.destroy();
+      const labels = Object.keys(languageData);
+      const data = Object.values(languageData);
+      const colors = labels.map((_, i) => `hsl(${i * 360 / labels.length}, 70%, 60%)`);
+
+      chartInstance = new Chart(ctx, {
+        type: type,
+        data: {
+          labels: labels,
+          datasets: [{
+            label: 'Repo theo ngôn ngữ',
+            data: data,
+            backgroundColor: colors,
+            borderColor: '#fff',
+            borderWidth: 1
+          }]
+        },
+        options: {
+          responsive: true,
+          plugins: {
+            legend: {
+              position: type === 'bar' ? 'top' : 'right'
+            }
+          }
+        }
+      });
+    }
+
+    chartTypeSelect.addEventListener('change', () => {
+      renderChart(chartTypeSelect.value);
+    });
+
+    async function fetchRepoData(username, repo) {
+      const ciEl = document.getElementById(`ci-${repo}`);
+      const commitEl = document.getElementById(`commit-${repo}`);
+
+      // CI/CD
+      const ci = await fetch(`https://api.github.com/repos/${username}/${repo}/actions/runs`).then(r => r.json());
+      const run = ci.workflow_runs?.[0];
+      if (run) {
+        const status = run.conclusion || 'Đang chạy';
+        let color = 'bg-yellow-500';
+        if (status === 'success') color = 'bg-green-600';
+        else if (status === 'failure') color = 'bg-red-600';
+        ciEl.innerHTML = `<div class="inline-block px-3 py-1 text-white text-xs rounded ${color}">CI/CD: ${status.toUpperCase()}</div>`;
+      } else {
+        ciEl.innerHTML = `<div class="text-gray-500">Không có dữ liệu CI/CD.</div>`;
+      }
+
+      // Commits
+      const commits = await fetch(`https://api.github.com/repos/${username}/${repo}/commits`).then(r => r.json());
+      commitEl.innerHTML = '';
+      commits.slice(0, 3).forEach(commit => {
+        const { name } = commit.commit.author;
+        const msg = commit.commit.message;
+        const date = new Date(commit.commit.author.date).toLocaleString('vi-VN');
+        commitEl.innerHTML += `
+          <div class="p-2 bg-gray-700 rounded border border-gray-600">
+            <p class="font-semibold text-green-400">${name}</p>
+            <p>${msg}</p>
+            <p class="text-xs text-gray-400">${date}</p>
+          </div>
+        `;
+      });
+    }
+
+    // Khởi động
+    fetchUserStats(GITHUB_USERNAME);
+  </script>
+</body>
+</html>

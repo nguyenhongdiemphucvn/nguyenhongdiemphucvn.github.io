@@ -1,0 +1,156 @@
+<!DOCTYPE html>
+<html lang="vi">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>Profile Nguyễn Hồng Diễm Phúc</title>
+  <link rel="icon" href="/images/logo.ico" type="image/x-icon">
+  <meta name="description" content="Profile Nguyễn Hồng Diễm Phúc - Github">
+  <meta name="author" content="Nguyễn Hồng Diễm Phúc">
+
+  <!-- SEO -->
+  <meta property="og:title" content="Profile Nguyễn Hồng Diễm Phúc">
+  <meta property="og:description" content="Profile Nguyễn Hồng Diễm Phúc - GitHub.">
+  <meta property="og:image" content="images/avatar.webp">
+  <meta property="og:url" content="https://nguyenhongdiemphucvn.github.io">
+  <link rel="manifest" href="/manifest.json">
+  <meta name="theme-color" content="#2196f3">
+
+  <!-- Tailwind CSS -->
+  <script src="https://cdn.tailwindcss.com"></script>
+
+  <!-- Monaco & Marked -->
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/monaco-editor/0.33.0/min/vs/loader.min.js" defer></script>
+  <script src="https://cdn.jsdelivr.net/npm/marked/marked.min.js" defer></script>
+
+  <!-- Main Script -->
+  <script src="/script/script.js" defer></script>
+  <script>
+    if ('serviceWorker' in navigator) {
+      navigator.serviceWorker.register('/public/service-worker.js')
+        .then(() => console.log('Service Worker đã được đăng ký'))
+        .catch(err => console.error('Đăng ký Service Worker thất bại:', err));
+    }
+  </script>
+</head>
+<body class="bg-gray-900 text-white font-sans h-screen flex flex-col">
+
+  <!-- Header -->
+  <header class="bg-gray-800 px-4 py-3 flex justify-between items-center">
+    <h1 class="text-xl font-semibold">Code Editor</h1>
+    <div class="flex gap-2 items-center">
+      <select id="themeSelect" class="bg-gray-700 text-white p-1 rounded">
+        <option value="vs-dark">Tối</option>
+        <option value="vs">Sáng</option>
+        <option value="hc-black">Tương phản cao</option>
+      </select>
+      <select id="fontSizeSelect" class="bg-gray-700 text-white p-1 rounded"></select>
+    </div>
+  </header>
+
+  <!-- Body -->
+  <div class="flex flex-1 overflow-hidden">
+
+    <!-- Sidebar -->
+    <aside id="sidebar" class="bg-gray-800 w-52 p-4 flex flex-col gap-2 transition-all duration-300">
+      <button id="menuToggleBtn" class="self-end text-gray-400 hover:text-white">&#9776;</button>
+
+      <button onclick="openModal()" class="bg-blue-600 hover:bg-blue-700 rounded p-2 text-sm sidebar-label">Lấy từ GitHub</button>
+      <button onclick="uploadEditorCode()" class="bg-green-600 hover:bg-green-700 rounded p-2 text-sm sidebar-label">Tải lên GitHub</button>
+      <button onclick="editor.getAction('actions.find').run()" class="bg-gray-700 hover:bg-gray-600 rounded p-2 text-sm sidebar-label">Tìm/Thay thế</button>
+      <button onclick="downloadFile()" class="bg-yellow-600 hover:bg-yellow-700 rounded p-2 text-sm sidebar-label">Tải xuống</button>
+      <button onclick="previewCode()" class="bg-indigo-600 hover:bg-indigo-700 rounded p-2 text-sm sidebar-label">Xem trước</button>
+
+      <label for="localFile" class="mt-2 text-xs sidebar-label">Chọn file từ máy:</label>
+      <input type="file" id="localFile" onchange="handleFileSelect(event)" class="text-sm text-white bg-gray-700 p-1 sidebar-label" />
+    </aside>
+
+    <!-- Editor -->
+    <main class="flex-1 flex flex-col">
+      <div id="editor" class="flex-1 border-t border-gray-700">// Viết mã tại đây...</div>
+      <div id="status" class="p-2 bg-gray-800 text-sm text-green-400"></div>
+    </main>
+
+    <!-- Preview -->
+    <section id="preview" class="w-1/2 bg-white text-black p-4 overflow-auto hidden">
+      <h2 class="text-lg font-bold mb-2">Xem trước</h2>
+      <iframe id="htmlPreview" class="w-full h-64 border border-gray-300 hidden"></iframe>
+      <div id="mdPreview" class="prose max-w-none hidden"></div>
+    </section>
+  </div>
+
+  <!-- GitHub Modal -->
+  <div id="githubModal" class="fixed inset-0 bg-black bg-opacity-60 flex justify-center items-center hidden z-50">
+    <div class="bg-gray-800 p-6 rounded shadow-lg w-full max-w-md space-y-4">
+      <h2 class="text-lg font-bold text-white">Thông tin GitHub</h2>
+      <input id="githubToken" class="w-full p-2 rounded bg-gray-700 text-white" placeholder="GitHub Token" />
+      <input id="githubOwner" class="w-full p-2 rounded bg-gray-700 text-white" placeholder="Tên người dùng" />
+      <input id="githubRepo" class="w-full p-2 rounded bg-gray-700 text-white" placeholder="Tên repository" />
+      <input id="githubBranch" class="w-full p-2 rounded bg-gray-700 text-white" placeholder="Nhánh (mặc định: main)" />
+      <input id="githubFilename" class="w-full p-2 rounded bg-gray-700 text-white" placeholder="Tên file (vd: index.html)" />
+
+      <div class="flex justify-end gap-2 pt-2">
+        <button onclick="closeModal()" class="px-4 py-2 bg-gray-600 hover:bg-gray-500 rounded text-white">Hủy</button>
+        <button onclick="submitModalData()" class="px-4 py-2 bg-blue-600 hover:bg-blue-500 rounded text-white">Xác nhận</button>
+      </div>
+    </div>
+  </div>
+
+  <!-- Sidebar Toggle Script -->
+  <script>
+    const toggleBtn = document.getElementById('menuToggleBtn');
+    const sidebar = document.getElementById('sidebar');
+    const labels = document.querySelectorAll('.sidebar-label');
+
+    toggleBtn.addEventListener('click', () => {
+      sidebar.classList.toggle('w-52');
+      sidebar.classList.toggle('w-14');
+      labels.forEach(label => {
+        label.classList.toggle('hidden');
+        label.classList.toggle('opacity-0');
+      });
+    });
+
+    function openModal() {
+      document.getElementById("githubModal").classList.remove("hidden");
+    }
+
+    function closeModal() {
+      document.getElementById("githubModal").classList.add("hidden");
+    }
+
+    function submitModalData() {
+      const token = document.getElementById("githubToken").value;
+      const owner = document.getElementById("githubOwner").value;
+      const repo = document.getElementById("githubRepo").value;
+      const branch = document.getElementById("githubBranch").value || "main";
+      const filename = document.getElementById("githubFilename").value;
+
+      closeModal();
+      fetchFileFromGitHubCustom(token, owner, repo, branch, filename);
+    }
+
+    function fetchFileFromGitHubCustom(token, owner, repo, branch, filename) {
+      const url = `https://api.github.com/repos/${owner}/${repo}/contents/${filename}?ref=${branch}`;
+      fetch(url, {
+        method: 'GET',
+        headers: {
+          'Authorization': `Bearer ${token}`,
+          'Accept': 'application/vnd.github.v3+json'
+        }
+      })
+        .then(res => res.ok ? res.json() : Promise.reject(res))
+        .then(data => {
+          const content = atob(data.content);
+          editor.setValue(content);
+          setLanguageByFilename(filename);
+          showStatus(`Đã tải ${filename} từ GitHub`);
+        })
+        .catch(async err => {
+          let msg = err.status ? (await err.json()).message : err.message;
+          showStatus(`❌ Lỗi: ${msg}`, true);
+        });
+    }
+  </script>
+</body>
+</html>

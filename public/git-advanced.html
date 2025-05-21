@@ -1,0 +1,117 @@
+<!DOCTYPE html>
+<html lang="vi">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>Profile Nguyễn Hồng Diễm Phúc</title>
+  <link rel="icon" href="/images/logo.ico" type="image/x-icon">
+  <meta name="description" content="Profile Nguyễn Hồng Diễm Phúc - Github">
+  <meta name="author" content="Nguyễn Hồng Diễm Phúc">
+
+  <!-- SEO -->
+  <meta property="og:title" content="Profile Nguyễn Hồng Diễm Phúc">
+  <meta property="og:description" content="Profile Nguyễn Hồng Diễm Phúc - GitHub.">
+  <meta property="og:image" content="images/avatar.webp">
+  <meta property="og:url" content="https://nguyenhongdiemphucvn.github.io">
+  <link rel="manifest" href="/manifest.json">
+  <meta name="theme-color" content="#2196f3">
+
+  <!-- Đăng ký Service Worker -->
+  <script>
+  if ('serviceWorker' in navigator) {
+    navigator.serviceWorker.register('/public/service-worker.js')
+      .then(() => console.log('Service Worker đã được đăng ký'))
+      .catch(err => console.error('Lỗi khi đăng ký Service Worker:', err));
+  }
+  </script>
+  <script src="https://cdn.tailwindcss.com"></script>
+  
+</head>
+<body class="bg-gray-900 text-white p-6 font-sans">
+  <div class="max-w-5xl mx-auto bg-gray-800 p-6 rounded-lg shadow-xl space-y-6">
+    <h1 class="text-3xl font-extrabold text-center text-indigo-400">Hướng dẫn Git Nâng Cao</h1>
+
+    <!-- Mục lục -->
+    <section>
+      <h2 class="text-xl font-semibold text-indigo-300">Nội dung</h2>
+      <ul class="list-disc list-inside mt-2 space-y-2 text-blue-400">
+        <li><a href="#remote" class="hover:underline">Quản lý nhiều remote</a></li>
+        <li><a href="#rebase" class="hover:underline">Rebase tương tác</a></li>
+        <li><a href="#hooks" class="hover:underline">Git Hooks</a></li>
+        <li><a href="#worktree" class="hover:underline">Git Worktree</a></li>
+        <li><a href="#bisect" class="hover:underline">Git Bisect</a></li>
+        <li><a href="#gpg" class="hover:underline">GPG commit</a></li>
+        <li><a href="#submodule" class="hover:underline">Git Submodule</a></li>
+      </ul>
+    </section>
+
+    <!-- Remote -->
+    <section id="remote">
+      <h2 class="text-2xl font-bold text-green-400 mt-6">1. Quản lý nhiều remote</h2>
+      <p class="mt-2">Khi bạn fork một dự án, bạn sẽ có 2 remote: <code class="text-yellow-300">origin</code> và <code class="text-yellow-300">upstream</code>.</p>
+      <pre class="bg-gray-700 p-4 rounded-lg mt-2 text-sm overflow-auto"><code>git remote add upstream https://github.com/original-project.git
+git fetch upstream
+git merge upstream/main</code></pre>
+    </section>
+
+    <!-- Rebase -->
+    <section id="rebase">
+      <h2 class="text-2xl font-bold text-green-400 mt-6">2. Rebase tương tác</h2>
+      <p class="mt-2">Giúp bạn làm sạch lịch sử commit trước khi gửi pull request.</p>
+      <pre class="bg-gray-700 p-4 rounded-lg mt-2 text-sm overflow-auto"><code>git rebase -i HEAD~5</code></pre>
+      <p class="mt-2">Bạn có thể <code>pick</code>, <code>reword</code>, <code>squash</code> hoặc <code>drop</code> commit.</p>
+    </section>
+
+    <!-- Hooks -->
+    <section id="hooks">
+      <h2 class="text-2xl font-bold text-green-400 mt-6">3. Git Hooks</h2>
+      <p class="mt-2">Tự động hóa kiểm tra trước khi commit hoặc push.</p>
+      <p class="mt-2">Ví dụ hook kiểm tra commit message:</p>
+      <pre class="bg-gray-700 p-4 rounded-lg mt-2 text-sm overflow-auto"><code>#!/bin/sh
+commit_msg=$(cat "$1")
+if ! echo "$commit_msg" | grep -qE "^(feat|fix|docs|refactor): "; then
+  echo "❌ Commit message phải bắt đầu bằng từ khóa hợp lệ!"
+  exit 1
+fi</code></pre>
+      <p class="mt-2 text-sm italic">Đặt vào <code>.git/hooks/commit-msg</code> và cấp quyền thực thi.</p>
+    </section>
+
+    <!-- Worktree -->
+    <section id="worktree">
+      <h2 class="text-2xl font-bold text-green-400 mt-6">4. Git Worktree</h2>
+      <p class="mt-2">Cho phép làm việc nhiều nhánh cùng lúc mà không cần clone nhiều lần.</p>
+      <pre class="bg-gray-700 p-4 rounded-lg mt-2 text-sm overflow-auto"><code>git worktree add ../feature-a feature-a</code></pre>
+    </section>
+
+    <!-- Bisect -->
+    <section id="bisect">
+      <h2 class="text-2xl font-bold text-green-400 mt-6">5. Git Bisect</h2>
+      <p class="mt-2">Tìm commit gây ra lỗi bằng cách chia đôi lịch sử.</p>
+      <pre class="bg-gray-700 p-4 rounded-lg mt-2 text-sm overflow-auto"><code>git bisect start
+git bisect bad
+git bisect good v1.0.0
+# Test từng bước và đánh dấu good/bad</code></pre>
+    </section>
+
+    <!-- GPG -->
+    <section id="gpg">
+      <h2 class="text-2xl font-bold text-green-400 mt-6">6. GPG Commit</h2>
+      <p class="mt-2">Ký commit để chứng minh danh tính (GitHub hiển thị Verified).</p>
+      <pre class="bg-gray-700 p-4 rounded-lg mt-2 text-sm overflow-auto"><code>git config --global user.signingkey ABCD1234
+git commit -S -m "feat: cập nhật bảo mật"</code></pre>
+    </section>
+
+    <!-- Submodule -->
+    <section id="submodule">
+      <h2 class="text-2xl font-bold text-green-400 mt-6">7. Git Submodule</h2>
+      <p class="mt-2">Dùng khi dự án của bạn phụ thuộc vào dự án khác.</p>
+      <pre class="bg-gray-700 p-4 rounded-lg mt-2 text-sm overflow-auto"><code>git submodule add https://github.com/example/lib-b.git libs/lib-b
+git submodule update --init --recursive</code></pre>
+    </section>
+
+    <footer class="text-center text-gray-400 text-sm pt-6 border-t border-gray-600 mt-8">
+      &copy; 2025 Nguyễn Hồng Diễm Phúc - Git nâng cao.
+    </footer>
+  </div>
+</body>
+</html>

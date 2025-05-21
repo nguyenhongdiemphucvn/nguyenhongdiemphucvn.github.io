@@ -1,0 +1,141 @@
+<!DOCTYPE html>
+<html lang="vi">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>Profile Nguyễn Hồng Diễm Phúc</title>
+  <link rel="icon" href="/images/logo.ico" type="image/x-icon">
+  <meta name="description" content="Profile Nguyễn Hồng Diễm Phúc - Github">
+  <meta name="author" content="Nguyễn Hồng Diễm Phúc">
+
+  <!-- SEO -->
+  <meta property="og:title" content="Profile Nguyễn Hồng Diễm Phúc">
+  <meta property="og:description" content="Profile Nguyễn Hồng Diễm Phúc - GitHub.">
+  <meta property="og:image" content="images/avatar.webp">
+  <meta property="og:url" content="https://nguyenhongdiemphucvn.github.io">
+
+  <!-- Tailwind CSS -->
+  <script src="https://cdn.tailwindcss.com"></script>
+
+  <!-- Đăng ký Service Worker -->
+  <link rel="manifest" href="/manifest.json">
+  <meta name="theme-color" content="#2196f3">
+
+  <script>
+  if ('serviceWorker' in navigator) {
+    navigator.serviceWorker.register(`${location.origin}/service-worker.js`)
+      .then(() => console.log('Service Worker đã được đăng ký'))
+      .catch(err => console.error('Đăng ký Service Worker thất bại:', err));
+  }
+  </script>
+  <script>
+    tailwind.config = {
+      theme: {
+        extend: {
+          colors: {
+            primary: '#4F46E5'
+          }
+        }
+      }
+    }
+  </script>
+</head>
+<body class="bg-gray-900 text-white font-sans">
+
+<!-- Mobile Sidebar -->
+<div id="mobileMenu" class="fixed inset-0 z-50 bg-gray-800 bg-opacity-95 transform -translate-x-full transition-transform duration-300 md:hidden">
+  <div class="p-6">
+    <button onclick="toggleMenu()" class="text-white text-2xl font-bold">&times;</button>
+    <nav class="mt-6 space-y-4 text-green-400">
+      <a href="/public/store.html" class="block">Kho Script Termux</a>
+      <a href="/public/code-editor.html" class="block">Trình Soạn Mã & GitHub</a>
+      <a href="/public/create-readme.html" class="block">Tạo README.md</a>
+      <a href="/public/zip-tool.html" class="block">Công Cụ ZIP</a>
+      <a href="/public/html-editor-preview.html" class="block">Trình Soạn HTML</a>
+      <a href="/public/create-access-key.html" class="block">Tạo Access Key</a>
+      <a href="/public/toggle-repository.html" class="block">Chuyển Đổi Repo</a>
+      <a href="/public/ci-cd-dashboard.html" class="block">Trạng Thái CI/CD</a>
+      <a href="/public/admin.html" class="block">Quản Lý Page</a>
+      <a href="/public/status.html" class="block">Trạng Thái Repo</a>
+    </nav>
+  </div>
+</div>
+
+<!-- Layout -->
+<div class="flex min-h-screen">
+  <!-- Sidebar Desktop -->
+  <aside class="hidden md:block w-64 bg-gray-800 p-6 space-y-4">
+    <h2 class="text-2xl font-bold text-indigo-400 mb-4">Menu</h2>
+    <nav class="space-y-3 text-green-400">
+      <a href="/public/store.html" class="block hover:text-green-300">Kho Script Termux</a>
+      <a href="/public/code-editor.html" class="block hover:text-green-300">Trình Soạn Mã & GitHub</a>
+      <a href="/public/create-readme.html" class="block hover:text-green-300">Tạo README.md</a>
+      <a href="/public/zip-tool.html" class="block hover:text-green-300">Công Cụ ZIP</a>
+      <a href="/public/html-editor-preview.html" class="block hover:text-green-300">Trình Soạn HTML</a>
+      <a href="/public/create-access-key.html" class="block hover:text-green-300">Tạo Access Key</a>
+      <a href="/public/toggle-repository.html" class="block hover:text-green-300">Chuyển Đổi Repo</a>
+      <a href="/public/ci-cd-dashboard.html" class="block hover:text-green-300">Trạng Thái CI/CD</a>
+      <a href="/public/admin.html" class="block hover:text-green-300">Quản Lý Page</a>
+      <a href="/public/status.html" class="block hover:text-green-300">Trạng Thái Repo</a>
+    </nav>
+  </aside>
+
+  <!-- Main Content -->
+  <main class="flex-1 p-6">
+    <!-- Mobile Header -->
+    <div class="flex justify-between items-center mb-6 md:hidden">
+      <h1 class="text-2xl font-bold text-indigo-400">Nguyễn Hồng Diễm Phúc</h1>
+      <button onclick="toggleMenu()" class="text-white text-2xl">&#9776;</button>
+    </div>
+
+    <!-- Welcome Section -->
+    <div class="mb-8 text-center md:text-left">
+      <h2 class="text-3xl font-extrabold text-indigo-400">Chào mừng bạn đến với Website</h2>
+      <p class="text-gray-300 mt-2">Quản lý các công cụ lập trình GitHub cá nhân.</p>
+    </div>
+
+    <!-- Dashboard Items -->
+    <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-2 gap-6">
+
+      <script>
+        const items = [
+          { name: 'Khóa Học Git.', link: '/public/training.html' },
+        ];
+
+        document.addEventListener('DOMContentLoaded', () => {
+          const grid = document.querySelector('.grid');
+          items.forEach(item => {
+            const el = document.createElement('div');
+            el.className = 'bg-gray-800 p-5 rounded-lg shadow hover:shadow-lg transition';
+            el.innerHTML = `
+              <div class="flex justify-between items-center">
+                <div class="flex items-center space-x-3">
+                  <img src="/images/logo.ico" alt="Icon" class="w-6 h-6">
+                  <h2 class="text-green-400">${item.name}</h2>
+                </div>
+                <button onclick="copyToClipboard('${item.link}')" class="bg-blue-600 hover:bg-blue-700 px-3 py-1 rounded">Sao chép</button>
+              </div>
+            `;
+            grid.appendChild(el);
+          });
+        });
+      </script>
+    </div>
+  </main>
+</div>
+
+<script>
+function toggleMenu() {
+  const menu = document.getElementById('mobileMenu');
+  menu.classList.toggle('-translate-x-full');
+}
+function copyToClipboard(url) {
+  const fullUrl = window.location.origin + url;
+  navigator.clipboard.writeText(fullUrl)
+    .then(() => alert('Đã sao chép URL!'))
+    .catch(err => alert('Lỗi sao chép: ' + err));
+}
+</script>
+
+</body>
+</html>

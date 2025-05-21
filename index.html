@@ -1,0 +1,176 @@
+<!DOCTYPE html>
+<html lang="vi">
+
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Profile Nguyễn Hồng Diễm Phúc</title>
+  <link rel="icon" href="/images/logo.ico" type="image/x-icon">
+  <meta name="description" content="Profile Nguyễn Hồng Diễm Phúc - Github">
+  <meta name="author" content="Nguyễn Hồng Diễm Phúc">
+  <!-- SEO -->
+  <meta property="og:title" content="Profile Nguyễn Hồng Diễm Phúc">
+  <meta property="og:description" content="Profile Nguyễn Hồng Diễm Phúc - GitHub.">
+  <meta property="og:image" content="images/avatar.webp">
+  <meta property="og:url" content="https://nguyenhongdiemphucvn.github.io">
+  <!-- Đăng ký Service Worker -->
+  <link rel="manifest" href="/manifest.json">
+  <meta name="theme-color" content="#2196f3">
+  <script>
+  if ('serviceWorker' in navigator) {
+        navigator.serviceWorker.register(`${location.origin}/service-worker.js`)
+          .then(() => console.log('Service Worker đã được đăng ký'))
+          .catch(err => console.error('Đăng ký Service Worker thất bại:', err));
+      }
+  </script>
+  
+  <script src="https://cdn.tailwindcss.com"></script>
+
+  <style>
+    /* Hiệu ứng fade-in cho toàn trang */
+    body {
+      opacity: 0;
+      animation: fadeIn 1s forwards;
+    }
+
+    @keyframes fadeIn {
+      0% { opacity: 0; }
+      100% { opacity: 1; }
+    }
+
+    /* Hiệu ứng float cho logo GitHub */
+    @keyframes float {
+      0%, 100% { transform: translateY(0); }
+      50% { transform: translateY(-10px); }
+    }
+    .float {
+      animation: float 3s ease-in-out infinite;
+    }
+
+    /* Hiệu ứng gõ chữ */
+    .typing span {
+      opacity: 0;
+      display: inline-block;
+      animation: appear 0.6s forwards;
+      color: white;
+    }
+
+    @keyframes appear {
+      from { opacity: 0; transform: translateY(-10px); }
+      to { opacity: 1; transform: translateY(0); }
+    }
+
+    /* Hiệu ứng fade-out khi chuyển trang */
+    .fade-out {
+      animation: fadeOut 0.5s forwards;
+    }
+
+    @keyframes fadeOut {
+      0% { opacity: 1; }
+      100% { opacity: 0; }
+    }
+  </style>
+</head>
+<body class="bg-gradient-to-r from-indigo-700 via-gray-800 to-gray-900 text-white min-h-screen flex items-center justify-center font-sans">
+
+  <div class="text-center p-8 max-w-2xl" id="content">
+
+    <!-- GitHub Logo -->
+    <div class="float mb-6">
+      <a href="https://github.com/nguyenhongdiemphucvn" target="_blank" title="Xem GitHub">
+        <img src="https://cdn.jsdelivr.net/gh/devicons/devicon/icons/github/github-original.svg"
+             alt="GitHub"
+             class="w-20 h-20 mx-auto hover:scale-110 transition-transform duration-300">
+      </a>
+    </div>
+
+    <!-- Tiêu đề -->
+    <h1 class="text-4xl md:text-5xl font-extrabold mb-4 drop-shadow typing leading-relaxed" id="welcomeText"></h1>
+
+    <!-- Mô tả -->
+    <p class="text-lg md:text-xl text-gray-200 mb-6">
+      Cùng khám phá những dự án và nội dung hấp dẫn trên GitHub của tôi!
+    </p>
+
+    <!-- Nút chuyển -->
+    <a href="/public/index.html" id="goHome" class="inline-block px-6 py-3 bg-indigo-500 hover:bg-indigo-600 text-white font-semibold rounded-lg shadow-lg transition">
+      Vào Trang Chủ
+    </a>
+
+    <!-- Trích dẫn động -->
+    <div class="mt-10 bg-white/5 border border-gray-500 rounded-lg p-4 text-sm italic text-gray-300 shadow-inner" id="quoteBox">
+      “Mỗi dòng code là một bước tiến đến tương lai. Hãy viết bằng đam mê.”
+    </div>
+
+    <!-- Đếm ngược -->
+    <p class="mt-4 text-xs text-gray-400">
+      Tự động chuyển đến trang chủ sau <span id="countdown">10</span> giây...
+    </p>
+
+    <!-- Social -->
+    <div class="mt-6 flex justify-center space-x-4">
+      <a href="https://github.com/nguyenhongdiemphucvn" target="_blank" title="GitHub">
+        <img src="https://cdn.jsdelivr.net/gh/devicons/devicon/icons/github/github-original.svg" class="w-6 h-6 hover:scale-125 transition">
+      </a>
+      <a href="https://www.linkedin.com/in/your-link" target="_blank" title="LinkedIn">
+        <img src="https://cdn.jsdelivr.net/gh/devicons/devicon/icons/linkedin/linkedin-original.svg" class="w-6 h-6 hover:scale-125 transition">
+      </a>
+    </div>
+
+    <!-- Footer -->
+    <footer class="mt-6 text-xs text-gray-500">
+      &copy; 2025 Nguyễn Hồng Diễm Phúc. All rights reserved.
+    </footer>
+  </div>
+
+  <!-- Scripts -->
+  <script>
+    // Hiệu ứng gõ chữ
+    const text = "Chào Mừng Bạn Đến Với Website";
+    const container = document.getElementById("welcomeText");
+    text.split("").forEach((char, i) => {
+      const span = document.createElement("span");
+      span.textContent = char === " " ? "\u00A0" : char;
+      span.style.animationDelay = `${i * 0.1}s`;
+      container.appendChild(span);
+    });
+
+    // Trích dẫn động
+    const quotes = [
+      "“Mỗi dòng code là một bước tiến đến tương lai. Hãy viết bằng đam mê.”",
+      "“Học hỏi hôm nay – dẫn đầu ngày mai.”",
+      "“Đừng sợ thất bại, hãy sợ không dám thử.”",
+      "“Website tuyệt vời bắt đầu từ dòng code đầy cảm hứng.”"
+    ];
+    const quoteBox = document.getElementById("quoteBox");
+    let quoteIndex = 0;
+    setInterval(() => {
+      quoteIndex = (quoteIndex + 1) % quotes.length;
+      quoteBox.textContent = quotes[quoteIndex];
+    }, 5000);
+
+    // Đếm ngược và tự động chuyển trang
+    let seconds = 15;
+    const countdown = document.getElementById("countdown");
+    const timer = setInterval(() => {
+      seconds--;
+      countdown.textContent = seconds;
+      if (seconds === 0) {
+        clearInterval(timer);
+        window.location.href = "/public/index.html";
+      }
+    }, 1000);
+
+    // Hiệu ứng fade-out khi bấm nút
+    const goHomeButton = document.getElementById("goHome");
+    goHomeButton.addEventListener("click", function(e) {
+      e.preventDefault();
+      document.getElementById("content").classList.add("fade-out"); // Áp dụng hiệu ứng fade-out
+      setTimeout(() => {
+        window.location.href = "/public/index.html"; // Sau khi fade-out xong, chuyển trang
+      }, 500); // Thời gian fade-out
+    });
+  </script>
+
+</body>
+</html>

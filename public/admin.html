@@ -1,0 +1,254 @@
+<!DOCTYPE html>
+<html lang="vi">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>Quản Lý Page Github.</title>
+  <link rel="icon" href="/images/logo.ico" type="image/x-icon">
+  <meta name="description" content="Quản Lý Page Github.">
+  <meta name="author" content="Nguyễn Hồng Diễm Phúc">
+
+  <!-- SEO -->
+  <meta property="og:title" content="Chính sách bảo mật">
+  <meta property="og:description" content="Chính sách bảo mật website.">
+  <meta property="og:image" content="images/avatar.webp">
+  <meta property="og:url" content="https://nguyenhongdiemphucvn.github.io">
+  
+  <script src="https://cdn.tailwindcss.com"></script>
+
+    <!-- Đăng ký Service Worker -->
+  <link rel="manifest" href="/manifest.json">
+  <meta name="theme-color" content="#2196f3">
+
+  <script>
+  if ('serviceWorker' in navigator) {
+    navigator.serviceWorker.register(`${location.origin}/service-worker.js`)
+      .then(() => console.log('Service Worker đã được đăng ký'))
+      .catch(err => console.error('Đăng ký Service Worker thất bại:', err));
+  }
+  </script>  
+</head>
+<body class="bg-gray-900 text-white font-sans p-6">
+
+<div class="max-w-4xl mx-auto bg-gray-800 p-6 rounded-lg shadow-md space-y-6">
+  <h1 class="text-3xl font-bold text-indigo-400 text-center">Quản lý GitHub Page</h1>
+
+  <div id="login-section" class="space-y-4">
+    <label class="block">
+      <span class="text-white">Nhập GitHub Token:</span>
+      <input type="password" id="token" class="w-full mt-1 p-2 rounded bg-gray-700 text-white" placeholder="ghp_...">
+    </label>
+    <button onclick="login()" class="bg-indigo-500 hover:bg-indigo-600 px-4 py-2 rounded text-white">Đăng nhập</button>
+  </div>
+
+  <div id="file-manager" class="hidden">
+    <div class="flex justify-between items-center">
+      <h2 class="text-xl font-semibold text-indigo-300">Danh sách file</h2>
+      <button onclick="logout()" class="text-sm text-red-400 underline">Đăng xuất</button>
+    </div>
+    <ul id="file-list" class="mt-4 space-y-2"></ul>
+  </div>
+</div>
+
+<!-- Modal xem/sửa -->
+<div id="modal" class="hidden fixed inset-0 bg-black bg-opacity-70 flex items-center justify-center z-50">
+  <div class="bg-gray-800 p-6 rounded-lg w-full max-w-2xl space-y-4">
+    <h3 id="modal-title" class="text-xl font-semibold text-indigo-400">Xem/Sửa file</h3>
+    <textarea id="file-content" class="w-full h-60 bg-gray-900 text-white p-2 rounded font-mono text-sm resize-none"></textarea>
+    <div class="flex justify-end space-x-2">
+      <button onclick="closeModal()" class="px-4 py-2 bg-gray-600 hover:bg-gray-700 rounded text-white">Đóng</button>
+      <button id="save-button" onclick="confirmAction('save')" class="px-4 py-2 bg-indigo-600 hover:bg-indigo-700 rounded text-white hidden">Lưu</button>
+    </div>
+  </div>
+</div>
+
+<!-- Modal xác nhận -->
+<div id="confirm-modal" class="hidden fixed inset-0 bg-black bg-opacity-60 flex items-center justify-center z-50">
+  <div class="bg-gray-800 p-6 rounded-lg w-full max-w-md space-y-4">
+    <h3 class="text-lg font-semibold text-red-400">Xác nhận hành động</h3>
+    <p class="text-sm text-white">Vui lòng nhập lại thông tin để xác nhận sửa hoặc xoá file.</p>
+    <input type="text" id="confirm-username" placeholder="GitHub Username" class="w-full p-2 bg-gray-700 text-white rounded" />
+    <input type="password" id="confirm-token" placeholder="GitHub Token" class="w-full p-2 bg-gray-700 text-white rounded" />
+    <div class="flex justify-end space-x-2">
+      <button onclick="cancelConfirm()" class="bg-gray-600 px-4 py-2 rounded text-white">Huỷ</button>
+      <button onclick="proceedConfirm()" class="bg-red-600 px-4 py-2 rounded text-white">Xác nhận</button>
+    </div>
+  </div>
+</div>
+
+<script>
+  const username = "nguyenhongdiemphucvn";
+  const repo = "nguyenhongdiemphucvn.github.io";
+  const api = `https://api.github.com/repos/${username}/${repo}/contents/`;
+  let token = "", currentPath = "", currentSha = "";
+  let actionType = "", actionTargetPath = "", actionTargetSha = "";
+
+  async function login() {
+    token = document.getElementById("token").value;
+    if (!token) return alert("Vui lòng nhập token");
+
+    document.getElementById("login-section").classList.add("hidden");
+    document.getElementById("file-manager").classList.remove("hidden");
+    loadFiles();
+  }
+
+  function logout() {
+    token = "";
+    document.getElementById("file-manager").classList.add("hidden");
+    document.getElementById("login-section").classList.remove("hidden");
+  }
+
+  async function loadFiles(path = "") {
+  currentPath = path;
+  const res = await fetch(api + path, {
+    headers: { Authorization: `token ${token}` }
+  });
+  if (!res.ok) {
+    alert("Không thể tải file. Kiểm tra token hoặc đường dẫn.");
+    logout();
+    return;
+  }
+
+  const data = await res.json();
+  const list = document.getElementById("file-list");
+  list.innerHTML = "";
+
+  // Nút trở về thư mục cha
+  if (path) {
+    const upPath = path.split("/").slice(0, -1).join("/");
+    const li = document.createElement("li");
+    li.className = "text-sm text-blue-300 cursor-pointer hover:underline";
+    li.innerHTML = `<span onclick="loadFiles('${upPath}')">⬅️ Trở về</span>`;
+    list.appendChild(li);
+  }
+
+  data.forEach(item => {
+    const li = document.createElement("li");
+    li.className = "bg-gray-700 p-2 rounded flex justify-between items-center";
+    if (item.type === "dir") {
+      li.innerHTML = `
+        <span class="cursor-pointer text-blue-300 hover:underline" onclick="loadFiles('${item.path}')">📁 ${item.name}</span>
+        <span class="text-sm italic text-gray-400">Thư mục</span>`;
+    } else {
+      li.innerHTML = `
+        <span>${item.name}</span>
+        <div class="space-x-2">
+          <button class="text-sm text-green-300" onclick="viewFile('${item.path}')">Xem</button>
+          <button class="text-sm text-yellow-300" onclick="editFile('${item.path}')">Sửa</button>
+          <button class="text-sm text-red-400" onclick="prepareDelete('${item.path}')">Xoá</button>
+        </div>`;
+    }
+    list.appendChild(li);
+  });
+}
+
+
+  async function viewFile(path) {
+    const res = await fetch(api + path, { headers: { Authorization: `token ${token}` }});
+    const data = await res.json();
+    const content = decodeURIComponent(escape(window.atob(data.content)));
+
+    document.getElementById("modal-title").textContent = "Xem file: " + path;
+    document.getElementById("file-content").value = content;
+    document.getElementById("save-button").classList.add("hidden");
+    document.getElementById("modal").classList.remove("hidden");
+  }
+
+  async function editFile(path) {
+    const res = await fetch(api + path, { headers: { Authorization: `token ${token}` }});
+    const data = await res.json();
+    const content = decodeURIComponent(escape(window.atob(data.content)));
+
+    currentPath = path;
+    currentSha = data.sha;
+    document.getElementById("modal-title").textContent = "Sửa file: " + path;
+    document.getElementById("file-content").value = content;
+    document.getElementById("save-button").classList.remove("hidden");
+    document.getElementById("modal").classList.remove("hidden");
+  }
+
+  async function prepareDelete(path) {
+    const res = await fetch(api + path, { headers: { Authorization: `token ${token}` }});
+    const data = await res.json();
+    actionType = "delete";
+    actionTargetPath = path;
+    actionTargetSha = data.sha;
+    document.getElementById("confirm-modal").classList.remove("hidden");
+  }
+
+  function confirmAction(type) {
+    actionType = type;
+    actionTargetPath = currentPath;
+    actionTargetSha = currentSha;
+    document.getElementById("confirm-modal").classList.remove("hidden");
+  }
+
+  function cancelConfirm() {
+    document.getElementById("confirm-modal").classList.add("hidden");
+  }
+
+  async function proceedConfirm() {
+    const user = document.getElementById("confirm-username").value.trim();
+    const tkn = document.getElementById("confirm-token").value.trim();
+
+    if (!user || !tkn) {
+      alert("Vui lòng nhập đủ username và token");
+      return;
+    }
+
+    try {
+      const check = await fetch("https://api.github.com/user", {
+        headers: { Authorization: `token ${tkn}` }
+      });
+      const info = await check.json();
+      if (info.login !== user) return alert("Username không khớp với token");
+
+      if (actionType === "delete") {
+        await fetch(api + actionTargetPath, {
+          method: "DELETE",
+          headers: {
+            Authorization: `token ${tkn}`,
+            "Content-Type": "application/json"
+          },
+          body: JSON.stringify({
+            message: `Xoá ${actionTargetPath}`,
+            sha: actionTargetSha
+          })
+        });
+        alert("Đã xoá thành công!");
+        cancelConfirm();
+        loadFiles();
+      }
+
+      if (actionType === "save") {
+        const newContent = document.getElementById("file-content").value;
+        await fetch(api + actionTargetPath, {
+          method: "PUT",
+          headers: {
+            Authorization: `token ${tkn}`,
+            "Content-Type": "application/json"
+          },
+          body: JSON.stringify({
+            message: `Cập nhật ${actionTargetPath}`,
+            content: btoa(unescape(encodeURIComponent(newContent))),
+            sha: actionTargetSha
+          })
+        });
+        alert("Đã lưu thành công!");
+        closeModal();
+        cancelConfirm();
+        loadFiles();
+      }
+    } catch (e) {
+      alert("Lỗi xác thực.");
+    }
+  }
+
+  function closeModal() {
+    document.getElementById("modal").classList.add("hidden");
+    document.getElementById("save-button").classList.add("hidden");
+  }
+</script>
+
+</body>
+</html>

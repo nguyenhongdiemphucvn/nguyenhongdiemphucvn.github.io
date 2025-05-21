@@ -1,0 +1,99 @@
+<!DOCTYPE html>
+<html lang="vi">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>Liên Hệ</title>
+  <link rel="icon" href="/images/logo.ico" type="image/x-icon">
+  <meta name="description" content="Liên hệ với chúng tôi">
+  <meta name="author" content="Nguyễn Hồng Diễm Phúc">
+
+  <!-- SEO -->
+  <meta property="og:title" content="Liên Hệ">
+  <meta property="og:description" content="Liên hệ với chúng tôi.">
+  <meta property="og:image" content="images/avatar.webp">
+  <meta property="og:url" content="https://nguyenhongdiemphucvn.github.io">
+
+  <!-- Tailwind CSS -->
+  <script src="https://cdn.tailwindcss.com"></script>
+
+  <!-- Đăng ký Service Worker -->
+  <link rel="manifest" href="/manifest.json">
+  <meta name="theme-color" content="#2196f3">
+
+  <script>
+  if ('serviceWorker' in navigator) {
+    navigator.serviceWorker.register(`${location.origin}/service-worker.js`)
+      .then(() => console.log('Service Worker đã được đăng ký'))
+      .catch(err => console.error('Đăng ký Service Worker thất bại:', err));
+  }
+  </script>
+</head>
+<body class="bg-gray-900 text-white p-6 font-sans">
+
+<div class="max-w-5xl mx-auto bg-gray-800 p-6 rounded-lg shadow-xl space-y-6">
+  <h1 class="text-3xl font-extrabold text-center text-indigo-400">Liên Hệ</h1>
+
+  <div class="bg-gray-700 p-6 rounded-lg shadow-md">
+    <h2 class="text-xl font-semibold text-indigo-300">Chúng tôi luôn sẵn sàng hỗ trợ bạn!</h2>
+    <p class="mt-4 text-white">
+      Nếu bạn có bất kỳ câu hỏi nào hoặc cần hỗ trợ, vui lòng điền thông tin vào form bên dưới. Chúng tôi sẽ phản hồi sớm nhất có thể.
+    </p>
+
+    <!-- Form Liên hệ -->
+    <form action="/send-message" method="POST" class="mt-6 space-y-4">
+      <!-- Tên -->
+      <div>
+        <label for="name" class="block text-lg font-medium text-indigo-300">Tên của bạn</label>
+        <input type="text" id="name" name="name" required class="mt-2 p-3 w-full bg-gray-600 text-white border border-gray-500 rounded-lg focus:outline-none focus:ring-2 focus:ring-indigo-400">
+      </div>
+
+      <!-- Email -->
+      <div>
+        <label for="email" class="block text-lg font-medium text-indigo-300">Email của bạn</label>
+        <input type="email" id="email" name="email" required class="mt-2 p-3 w-full bg-gray-600 text-white border border-gray-500 rounded-lg focus:outline-none focus:ring-2 focus:ring-indigo-400">
+      </div>
+
+      <!-- Chủ đề -->
+      <div>
+        <label for="subject" class="block text-lg font-medium text-indigo-300">Chủ đề</label>
+        <input type="text" id="subject" name="subject" required class="mt-2 p-3 w-full bg-gray-600 text-white border border-gray-500 rounded-lg focus:outline-none focus:ring-2 focus:ring-indigo-400">
+      </div>
+
+      <!-- Tin nhắn -->
+      <div>
+        <label for="message" class="block text-lg font-medium text-indigo-300">Tin nhắn của bạn</label>
+        <textarea id="message" name="message" rows="6" required class="mt-2 p-3 w-full bg-gray-600 text-white border border-gray-500 rounded-lg focus:outline-none focus:ring-2 focus:ring-indigo-400"></textarea>
+      </div>
+
+      <!-- Nút Gửi -->
+      <div>
+        <button type="submit" class="w-full py-3 bg-indigo-500 text-white rounded-lg hover:bg-indigo-600 focus:outline-none focus:ring-2 focus:ring-indigo-400">Gửi</button>
+      </div>
+    </form>
+
+    <div class="mt-6">
+      <h3 class="text-lg font-semibold text-indigo-300">Thông tin liên hệ khác</h3>
+      <p class="mt-2 text-white">
+        Nếu bạn cần liên lạc trực tiếp, bạn có thể sử dụng một trong các phương thức sau:
+      </p>
+      <ul class="mt-4 space-y-2">
+        <li class="flex items-center">
+          <span class="text-indigo-300">Email:</span>
+          <a href="mailto:hr.nguyenhongdiemphuc@gmail.com" class="ml-2 text-indigo-400 hover:text-indigo-500">hr.nguyenhongdiemphuc@gmail.com</a>
+        </li>
+        <li class="flex items-center">
+          <span class="text-indigo-300">Số điện thoại:</span>
+          <a href="tel:+84979069739" class="ml-2 text-indigo-400 hover:text-indigo-500">+84 979 069 739</a>
+        </li>
+        <li class="flex items-center">
+          <span class="text-indigo-300">Facebook:</span>
+          <a href="https://facebook.com/" target="_blank" class="ml-2 text-indigo-400 hover:text-indigo-500">facebook.com/</a>
+        </li>
+      </ul>
+    </div>
+  </div>
+</div>
+
+</body>
+</html>

@@ -1,0 +1,200 @@
+<!DOCTYPE html>
+<html lang="vi">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>Profile Nguyễn Hồng Diễm Phúc</title>
+  <link rel="icon" href="/images/logo.ico" type="image/x-icon">
+  <meta name="description" content="Profile Nguyễn Hồng Diễm Phúc - Github">
+  <meta name="author" content="Nguyễn Hồng Diễm Phúc">
+
+  <!-- SEO -->
+  <meta property="og:title" content="Profile Nguyễn Hồng Diễm Phúc">
+  <meta property="og:description" content="Profile Nguyễn Hồng Diễm Phúc - GitHub.">
+  <meta property="og:image" content="images/avatar.webp">
+  <meta property="og:url" content="https://nguyenhongdiemphucvn.github.io">
+  <meta name="theme-color" content="#2196f3">
+  <link rel="manifest" href="/manifest.json">
+  
+  <script src="https://cdn.tailwindcss.com"></script>
+  <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+    <script>
+    if ('serviceWorker' in navigator) {
+      navigator.serviceWorker.register('/public/service-worker.js')
+        .then(() => console.log('Service Worker đã đăng ký'))
+        .catch(err => console.error('Đăng ký Service Worker thất bại:', err));
+    }
+  </script>
+  <style>
+    body { background-color: #0f172a; color: white; }
+    .toast {
+      position: fixed;
+      bottom: 1rem;
+      left: 50%;
+      transform: translateX(-50%);
+      background: #16a34a;
+      padding: 0.5rem 1rem;
+      border-radius: 0.375rem;
+      animation: fade 0.3s ease-in-out;
+    }
+    @keyframes fade {
+      from { opacity: 0; transform: translateY(10px); }
+      to { opacity: 1; transform: translateY(0); }
+    }
+  </style>
+</head>
+<body class="min-h-screen p-6 font-sans">
+  <div class="max-w-4xl mx-auto space-y-8">
+    <h1 class="text-4xl font-bold text-center text-blue-400">Trình tạo README.md từ GitHub</h1>
+
+    <!-- Nhập GitHub -->
+    <div class="bg-slate-800 p-6 rounded-lg shadow">
+      <label class="block mb-2 text-sm">Tên GitHub:</label>
+      <input id="githubUsername" class="w-full p-2 rounded bg-slate-700 border border-slate-600 text-white" placeholder="vd: your-username" />
+      <button onclick="layThongKeGitHub()" class="mt-3 bg-blue-600 hover:bg-blue-700 text-white px-4 py-2 rounded">Lấy thống kê</button>
+    </div>
+
+    <!-- Form -->
+    <div class="bg-slate-800 p-6 rounded-lg shadow space-y-4">
+      <input id="title" class="w-full p-2 rounded bg-slate-700 border border-slate-600 text-white" placeholder="Tên dự án" />
+      <textarea id="description" rows="3" class="w-full p-2 rounded bg-slate-700 border border-slate-600 text-white" placeholder="Mô tả dự án"></textarea>
+      <textarea id="installation" rows="2" class="w-full p-2 rounded bg-slate-700 border border-slate-600 text-white" placeholder="Lệnh cài đặt"></textarea>
+      <textarea id="usage" rows="2" class="w-full p-2 rounded bg-slate-700 border border-slate-600 text-white" placeholder="Lệnh sử dụng"></textarea>
+
+      <button onclick="taoReadme()" class="w-full bg-green-600 hover:bg-green-700 text-white py-2 rounded font-semibold">Tạo README.md</button>
+    </div>
+
+    <!-- Thống kê -->
+    <div id="stats" class="bg-slate-800 p-6 rounded shadow hidden">
+      <h3 class="text-xl font-semibold text-lime-400 mb-3">Thống kê GitHub</h3>
+      <ul id="statsList" class="text-sm space-y-1 text-gray-300"></ul>
+      <canvas id="languageChart" height="200"></canvas>
+    </div>
+
+    <!-- README Preview -->
+    <div id="readmePreview" class="bg-slate-800 p-6 rounded shadow hidden">
+      <h3 class="text-xl font-semibold text-yellow-300 mb-2">Xem trước README.md</h3>
+      <pre id="readmeContent" class="whitespace-pre-wrap bg-slate-700 text-sm p-4 rounded overflow-auto border border-slate-600 text-gray-100"></pre>
+      <button onclick="taiVeReadme()" class="mt-3 bg-blue-600 hover:bg-blue-700 px-4 py-2 rounded text-white">Tải README.md</button>
+    </div>
+  </div>
+
+  <script>
+    let thongKeGitHub = { sao: 0, nhanh: 0, kho: 0, ngonNgu: {} };
+
+    async function layThongKeGitHub() {
+      const tenNguoiDung = document.getElementById('githubUsername').value.trim();
+      if (!tenNguoiDung) return alert('Vui lòng nhập tên GitHub.');
+      const url = `https://api.github.com/users/${tenNguoiDung}/repos?per_page=100`;
+
+      try {
+        const res = await fetch(url);
+        if (!res.ok) throw new Error('Không thể lấy dữ liệu GitHub');
+        const repos = await res.json();
+
+        thongKeGitHub = { sao: 0, nhanh: 0, kho: repos.length, ngonNgu: {} };
+
+        repos.forEach(repo => {
+          thongKeGitHub.sao += repo.stargazers_count;
+          thongKeGitHub.nhanh += repo.forks_count;
+          if (repo.language) {
+            thongKeGitHub.ngonNgu[repo.language] = (thongKeGitHub.ngonNgu[repo.language] || 0) + 1;
+          }
+        });
+
+        document.getElementById('stats').classList.remove('hidden');
+        document.getElementById('statsList').innerHTML = `
+          <li>- ⭐️ Sao: ${thongKeGitHub.sao}</li>
+          <li>- 🍴 Fork: ${thongKeGitHub.nhanh}</li>
+          <li>- 📦 Repo: ${thongKeGitHub.kho}</li>
+          <li>- 🧠 Ngôn ngữ: ${Object.keys(thongKeGitHub.ngonNgu).join(', ')}</li>
+        `;
+        veBieuDoNgonNgu(thongKeGitHub.ngonNgu);
+      } catch (err) {
+        console.error(err);
+        alert('Lỗi khi lấy dữ liệu GitHub.');
+      }
+    }
+
+    function veBieuDoNgonNgu(ngonNgu) {
+      const ctx = document.getElementById('languageChart').getContext('2d');
+      new Chart(ctx, {
+        type: 'pie',
+        data: {
+          labels: Object.keys(ngonNgu),
+          datasets: [{
+            data: Object.values(ngonNgu),
+            backgroundColor: Object.keys(ngonNgu).map(() => `hsl(${Math.random() * 360}, 70%, 60%)`)
+          }]
+        }
+      });
+    }
+
+    function taoReadme() {
+      const tieuDe = document.getElementById('title').value.trim();
+      const moTa = document.getElementById('description').value.trim();
+      const caiDat = document.getElementById('installation').value.trim();
+      const suDung = document.getElementById('usage').value.trim();
+      const tenNguoiDung = document.getElementById('githubUsername').value.trim();
+
+      const readme = `# ${tieuDe}
+
+![Stars](https://img.shields.io/badge/Sao-${thongKeGitHub.sao}-green?style=flat-square)
+![Forks](https://img.shields.io/badge/Fork-${thongKeGitHub.nhanh}-blue?style=flat-square)
+
+## Mô tả
+
+${moTa}
+
+## Demo
+
+> *Thêm ảnh minh hoạ hoặc link demo ở đây nếu có*
+
+## Cài đặt
+
+\`\`\`bash
+${caiDat}
+\`\`\`
+
+## Cách sử dụng
+
+\`\`\`bash
+${suDung}
+\`\`\`
+
+## Thống kê GitHub
+
+- **Sao:** ${thongKeGitHub.sao}
+- **Fork:** ${thongKeGitHub.nhanh}
+- **Repositories:** ${thongKeGitHub.kho}
+- **Ngôn ngữ chính:** ${Object.keys(thongKeGitHub.ngonNgu).join(', ') || 'Không rõ'}
+
+## Đóng góp
+
+Đóng góp được chào đón! Hãy mở Issue hoặc Pull Request để cùng phát triển.
+
+## Tác giả
+
+**Nguyễn Hồng Diễm Phúc**  
+[GitHub Profile](https://github.com/${tenNguoiDung})
+
+## Giấy phép
+
+Dự án này sử dụng [MIT License](https://opensource.org/licenses/MIT).
+`;
+
+      document.getElementById('readmeContent').textContent = readme;
+      document.getElementById('readmePreview').classList.remove('hidden');
+    }
+
+    function taiVeReadme() {
+      const noiDung = document.getElementById('readmeContent').textContent;
+      const blob = new Blob([noiDung], { type: 'text/markdown' });
+      const link = document.createElement('a');
+      link.href = URL.createObjectURL(blob);
+      link.download = 'README.md';
+      link.click();
+    }
+  </script>
+</body>
+</html>
